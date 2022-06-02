@@ -38,7 +38,7 @@ public class CalcService {
 
             switch(choice) {
                 case 1:
-                    search();
+                    calculator.findAllResult();
                     break;
                 case 2:
                     calculator.calculation(scan);
@@ -55,18 +55,6 @@ public class CalcService {
 
         }
 
-    }
-
-    // 계산 결과 조회
-    void search() {
-
-        if(calculator.findAllResult().size()==0) {
-            System.out.println("조회 결과 없음");
-        } else {
-            for (String result : calculator.findAllResult()) {
-                System.out.println(result);
-            }
-        }
     }
 
 }

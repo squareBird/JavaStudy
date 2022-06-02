@@ -106,14 +106,26 @@ public class ConsoleCalculator implements CalculatorInterface{
         }
     }
 
+    // repository에 저장
     @Override
     public void save(String result) {
         repository.save(result);
     }
 
+    // 모든 결과 조회
     @Override
-    public ArrayList<String> findAllResult() {
-        return repository.findAllResult();
+    public void  findAllResult() {
+
+        ArrayList<String> result = repository.findAllResult();
+
+        if(result.size()==0) {
+            System.out.println("조회 결과 없음");
+        } else {
+            for (String s : result) {
+                System.out.println(s);
+            }
+        }
+
     }
 
 }
