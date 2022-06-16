@@ -4,19 +4,17 @@ import java.util.Scanner;
 
 public class CalcService {
 
-    private final CalculatorInterface calculator;
+    private final Calculator calculator;
 
-    CalcService(CalculatorInterface calculator) {
+    CalcService(Calculator calculator) {
         this.calculator = calculator;
     }
 
     public static void main(String[] args) {
 
-        // 객체 주입
-        CalcService calcService = new CalcService(
-                new ConsoleCalculator(
-                        new MemoryResultRepository()));
-
+        ResultRepository repository = new MemoryResultRepository();
+        Calculator calculator = new ConsoleCalculator(repository);
+        CalcService calcService = new CalcService(calculator);
         // 메뉴
         calcService.menu();
 
@@ -41,7 +39,7 @@ public class CalcService {
                     calculator.findAllResult();
                     break;
                 case 2:
-                    calculator.calculation(scan);
+                    calculator.calculate();
                     break;
                 case 0:
                     System.out.println("종료");
@@ -51,7 +49,7 @@ public class CalcService {
                     break;
             }
 
-            if(choice==0) break;
+            if(choice==0) return;
 
         }
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * 저장 결과를 Memory에 저장
  * ArrayList<String> 형태로 저장
  */
-public class MemoryResultRepository implements ResultRepositoryInterface{
+public class MemoryResultRepository implements ResultRepository{
 
     private static ArrayList<String> store = new ArrayList<>();
 
