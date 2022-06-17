@@ -1,34 +1,45 @@
 package Calculator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
-public class ConsoleCalculator implements CalculatorInterface{
+public class ConsoleCalculator implements Calculator{
 
-    private final ResultRepositoryInterface repository;
+    private final ResultRepository repository;
+    private final String PLUS = "+";
+    private final String MINUS = "-";
+    private final String MULTIPLY = "*";
+    private final String DIVIDE = "/";
 
-    ConsoleCalculator(ResultRepositoryInterface repository) {
+    ConsoleCalculator(ResultRepository repository) {
         this.repository = repository;
     }
     @Override
-    public void calculation(Scanner scan) {
+    public void calculate() {
 
         System.out.println("계산식 입력 (숫자, 연산부호 구분 띄어쓰기)");
-
-        scan.nextLine();
+        Scanner scan = new Scanner(System.in);
         String input = scan.nextLine();
 
-        // 예외처리
-        // 1. 앞에 부호가-일 경우
         ArrayList<String> list = new ArrayList<>(Arrays.asList(input.split("(?<=[*/+-])|(?=[*/+-])")));
 
-        System.out.println(list);
+        while(true) {
 
-        multiply(list);
-        divide(list);
-        plus(list);
-        subtract(list);
+            // list의 모든 계산을 마쳐서 하나의 값이 남으면 끝
+            if(list.size()==1) break;
+
+            // 가장 먼저 계산해야할 부호가 위치한 곳을 찾음
+            // 앞의꺼랑 뒤에꺼랑 Operater이용해 계산 후 뒤, 앞 순으로 ArrayList에서 제거
+            int index = findIndex(list);
+            int pre = Integer.parseInt(list.get(index-1));
+            int next = Integer.parseInt(list.get(index+1));
+
+            Operater operater = Operater.of(list.get(index));
+
+            list.set(index, Integer.toString(operater.caculate(pre,next)));
+            list.remove(index+1);
+            list.remove(index-1);
+
+        }
 
         System.out.println(list.get(0));
 
@@ -36,74 +47,26 @@ public class ConsoleCalculator implements CalculatorInterface{
 
     }
 
-    void multiply(ArrayList<String> list) {
-        while(true) {
-            if(list.indexOf("*")==-1)
-                break;
+    int findIndex(ArrayList<String> list) {
 
-            int index = list.indexOf("*");
-            int pre = Integer.parseInt(list.get(index-1));
-            int next = Integer.parseInt(list.get(index+1));
-            int result = pre*next;
+        // 부호별로 제일 앞에있는거 확인
+        int multiple = list.indexOf(MULTIPLY);
+        int divide = list.indexOf(DIVIDE);
 
-            list.set(index, Integer.toString(result));
-            list.remove(index+1);
-            list.remove(index-1);
+        // 곱셈이나 나눗셈중에 하나라도 -1이 아니면 그 값을 옮김
+        if(multiple!=-1 || divide!=-1) {
+            // 최초에 min값이 -1이면 다른 하나가 -1이 아니라는 소리 max로 return
+            if(Math.min(list.indexOf(MULTIPLY),list.indexOf(DIVIDE))==-1) {
+                return Math.max(list.indexOf(MULTIPLY),list.indexOf(DIVIDE));
+            }
+            return Math.min(list.indexOf(MULTIPLY),list.indexOf(DIVIDE));
         }
 
-    }
-
-    void divide(ArrayList<String> list) {
-        while(true) {
-            if(list.indexOf("/")==-1)
-                break;
-
-            int index = list.indexOf("/");
-            int pre = Integer.parseInt(list.get(index-1));
-            int next = Integer.parseInt(list.get(index+1));
-            int result = pre/next;
-
-            list.set(index, Integer.toString(result));
-            list.remove(index+1);
-            list.remove(index-1);
+        if(Math.min(list.indexOf(PLUS), list.indexOf(MINUS))==-1) {
+            return Math.max(list.indexOf(PLUS), list.indexOf(MINUS));
         }
+        return Math.min(list.indexOf(PLUS), list.indexOf(MINUS));
 
-
-
-    }
-
-    void plus(ArrayList<String> list) {
-        while(true) {
-            if(list.indexOf("+")==-1)
-                break;
-
-            int index = list.indexOf("+");
-            int pre = Integer.parseInt(list.get(index-1));
-            int next = Integer.parseInt(list.get(index+1));
-            int result = pre+next;
-
-            list.set(index, Integer.toString(result));
-            list.remove(index+1);
-            list.remove(index-1);
-        }
-
-
-    }
-
-    void subtract(ArrayList<String> list) {
-        while(true) {
-            if(list.indexOf("-")==-1)
-                break;
-
-            int index = list.indexOf("-");
-            int pre = Integer.parseInt(list.get(index-1));
-            int next = Integer.parseInt(list.get(index+1));
-            int result = pre-next;
-
-            list.set(index, Integer.toString(result));
-            list.remove(index+1);
-            list.remove(index-1);
-        }
     }
 
     // repository에 저장

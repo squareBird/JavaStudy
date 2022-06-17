@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 // 계산기 기능
-public interface CalculatorInterface {
+public interface Calculator {
 
     // 계산
-    void calculation(Scanner scan);
+    void calculate();
 
     // 계산 결과 저장
     void save(String result);
